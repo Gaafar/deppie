@@ -37,7 +37,7 @@ const createProxy = (dependencies) => {
 };
 
 // TODO: use getters for lazy loading?
-module.exports = (moduleDefinitions, existingModules = {}) =>
+module.exports = (moduleDefinitions, existingDependencies = {}) =>
     f.flow(
         f.toPairs,
         f.reduce((dependencies, [name, factoryMethod]) => {
@@ -53,6 +53,6 @@ module.exports = (moduleDefinitions, existingModules = {}) =>
 
             const instance = factoryMethod(dependencies);
             return f.assign(dependencies, { [name]: instance });
-        }, existingModules),
+        }, existingDependencies),
         createProxy
     )(moduleDefinitions);
