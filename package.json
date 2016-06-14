@@ -1,34 +1,35 @@
 {
-    "name": "di",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "run": "node app.js",
-        "dev": "nodemon app.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Gaafar/di.git"
-    },
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/Gaafar/di/issues"
-    },
-    "homepage": "https://github.com/Gaafar/di#readme",
-    "dependencies": {
-        "babylon": "^6.8.1",
-        "body-parser": "^1.15.1",
-        "express": "^4.13.4",
-        "lodash": "^4.13.1"
-    },
-    "devDependencies": {
-        "eslint": "^2.11.1",
-        "eslint-config-airbnb": "^9.0.1",
-        "eslint-plugin-import": "^1.8.1",
-        "eslint-plugin-jsx-a11y": "^1.2.2",
-        "eslint-plugin-react": "^5.1.1",
-        "nodemon": "^1.9.2"
-    }
+  "name": "di",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gaafar/di.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gaafar/di/issues"
+  },
+  "homepage": "https://github.com/Gaafar/di#readme",
+  "dependencies": {
+    "babylon": "^6.8.1",
+    "bluebird": "^3.4.0",
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "lodash": "^4.13.1"
+  },
+  "devDependencies": {
+    "eslint": "^2.11.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.8.1",
+    "eslint-plugin-jsx-a11y": "^1.2.2",
+    "eslint-plugin-react": "^5.1.1",
+    "nodemon": "^1.9.2"
+  }
 }
