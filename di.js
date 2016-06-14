@@ -37,6 +37,7 @@ const createProxy = (dependencies) => {
 };
 
 // TODO: use getters for lazy loading?
+// TODO: test with existingDependencies
 module.exports = (moduleDefinitions, existingDependencies = {}) =>
     f.flow(
         f.toPairs,
