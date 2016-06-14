@@ -51,8 +51,8 @@ module.exports = (moduleDefinitions, existingModules = {}) =>
                 console.trace(`missing dependency "${missingDependency}" for module "${name}"`);
             }
 
-            const instace = factoryMethod(dependencies);
-            return f.assign(dependencies, { [name]: instace });
+            const instance = factoryMethod(dependencies);
+            return f.assign(dependencies, { [name]: instance });
         }, existingModules),
         createProxy
     )(moduleDefinitions);
