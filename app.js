@@ -24,7 +24,7 @@ const moduleDefinitions = {
 
 const dependencies = di(moduleDefinitions);
 
-console.log(dependencies)
+console.log(dependencies);
 // Add routes
 f.each(({ method, pattern, middleware = [], handler }) =>
     app[method](pattern, [...middleware, handler]), dependencies.routes);
