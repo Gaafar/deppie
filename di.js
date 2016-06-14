@@ -24,7 +24,7 @@ const checkMissingDependencies = (factoryMethod, dependencies) => {
 
 const createProxy = (dependencies) => {
     const proxyHandler = {
-        get (target, name) {
+        get(target, name) {
             // check string names only to avoid breaking symbols (console.log)
             if (typeof name === 'string' && !target[name]) {
                 console.trace(`dependency "${name}" not found`);
