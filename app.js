@@ -19,6 +19,7 @@ const app = express()
 const moduleDefinitions = {
     config: () => config,
     apiClient,
+    routes,
 };
 
 const dependencies = di(moduleDefinitions);
@@ -26,7 +27,7 @@ const dependencies = di(moduleDefinitions);
 console.log(dependencies)
 // Add routes
 f.each(({ method, pattern, middleware = [], handler }) =>
-    app[method](pattern, [...middleware, handler]), routes(dependencies));
+    app[method](pattern, [...middleware, handler]), dependencies.routes);
 
 app.listen(config.port);
 console.log(`listening on port ${config.port}`);
