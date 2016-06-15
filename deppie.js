@@ -17,9 +17,9 @@ const checkMissingDependencies = (factoryMethod, dependencies) => {
     const functionStr = factoryMethod.toString();
     const requiredDependencies = parseDependencies(functionStr);
 
-    const missingDependency = f.find(d => !dependencies[d], requiredDependencies);
+    const missingDependencies = f.filter(d => !dependencies[d], requiredDependencies);
 
-    return missingDependency;
+    return missingDependencies;
 };
 
 const createProxy = (dependencies) => {
@@ -48,18 +48,20 @@ module.exports = (moduleDefinitions, existingDependencies = {}) =>
             }
 
             // check if all dependencies are available for module
-            const missingDependency = checkMissingDependencies(factoryMethod, dependencies);
-            if (missingDependency) {
-                console.trace(`missing dependency "${missingDependency}" for module "${name}"`);
+            const missingDependencies = checkMissingDependencies(factoryMethod, dependencies);
+            if (missingDependencies.length) {
+                console.trace(`missing dependencies "${missingDependencies.join(', ')}" \
+for module "${name}"
+these dependencies must be defined before "${name}"`);
             }
 
             // ignore modules with no return, with a log message
             const createdModule = factoryMethod(dependencies);
-            if (createdModule) {
-                return f.assign(dependencies, { [name]: createdModule });
+            if (createdModule == undefined) {
+                console.log(`no return from module "${name}", it will not be available to inject`);
+                return dependencies;
             }
-            console.log(`no return from module "${name}", it will not be available to inject`);
-            return dependencies;
+            return f.assign(dependencies, { [name]: createdModule });
         }, existingDependencies),
         createProxy
     )(moduleDefinitions);
