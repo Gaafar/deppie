@@ -15,7 +15,7 @@
   "dependencies": {
     "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",
-    "deppie": "0.1.0",
+    "deppie": "latest",
     "express": "^4.13.4",
     "lodash": "^4.13.1"
   },
