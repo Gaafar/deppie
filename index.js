@@ -1,4 +1,4 @@
-const di = require('./di');
+const deppie = require('./deppie');
 
 // modules
 const config = { port: 8088 };
@@ -18,4 +18,4 @@ const moduleDefinitions = {
 };
 
 // bootstrap all modules
-di(moduleDefinitions);
+deppie(moduleDefinitions);
