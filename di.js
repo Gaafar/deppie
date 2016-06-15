@@ -38,6 +38,7 @@ const createProxy = (dependencies) => {
 
 // TODO: use getters for lazy loading?
 // TODO: test with existingDependencies
+// TODO: use a prefix for all log messages
 module.exports = (moduleDefinitions, existingDependencies = {}) =>
     f.flow(
         f.toPairs,
@@ -52,8 +53,13 @@ module.exports = (moduleDefinitions, existingDependencies = {}) =>
                 console.trace(`missing dependency "${missingDependency}" for module "${name}"`);
             }
 
-            const instance = factoryMethod(dependencies);
-            return f.assign(dependencies, { [name]: instance });
+            // ignore modules with no return, with a log message
+            const createdModule = factoryMethod(dependencies);
+            if (createdModule) {
+                return f.assign(dependencies, { [name]: createdModule });
+            }
+            console.log(`no return from module "${name}", it will not be available to inject`);
+            return dependencies;
         }, existingDependencies),
         createProxy
     )(moduleDefinitions);

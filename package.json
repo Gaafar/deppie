@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "node app.js",
-    "dev": "nodemon app.js"
+    "run": "node index.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
