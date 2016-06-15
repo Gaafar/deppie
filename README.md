@@ -1,8 +1,7 @@
 # deppie
-
-## Introduction
 The simple, small, elegant Dependency Injection framework for javascript.
 
+## Introduction
 deppie provides a very minimal API to set up an IoC container. It was born out of the pain my team and I had trying to find a DI framework to use in our projects that we could adopt effortlessly in our existing and new projects without writing extra code or config; or creating our modules in a counter intuitive way so that the framework dictates.
 
 If you're not familiar with DI & IoC you can refer to [this article by Martin Fowler][1], but the basic idea is that you write your code that depends on a module, without knowing (or caring) where that module comes from as long as it has the interface you expect.
