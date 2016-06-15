@@ -31,6 +31,11 @@ const createProxy = (dependencies) => {
             }
             return target[name];
         },
+        // prevent setting object properties
+        set(target, name, value) {
+            // console.log({target, name, value});
+            console.trace(`dependencies cannot be set, tried to set dependency "${name}"`);
+        },
     };
 
     return new Proxy(dependencies, proxyHandler);
