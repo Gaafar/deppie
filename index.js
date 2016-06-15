@@ -47,8 +47,9 @@ const createProxy = (dependencies) => {
 // TODO: rename modules, dependencies to ?
 module.exports = (moduleDefinitions, existingDependencies = {}) =>
     f.flow(
-        f.toPairs,
+        f.flatMap(f.toPairs),
         f.reduce((dependencies, [name, factoryMethod]) => {
+            console.log(dependencies);
             if (dependencies[name]) {
                 throw new Error(`dependency name (${name}) already exists`);
             }

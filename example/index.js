@@ -1,4 +1,4 @@
-const deppie = require('deppie');
+const deppie = require('../index');
 
 // modules
 const config = { port: 8088 };
@@ -7,15 +7,15 @@ const routes = require('./routes');
 const app = require('./app');
 
 // the modules need to be defined in order of dependency
-// Hash (key: string, factoryMethod: (dependencies) -> module)
-const moduleDefinitions = {
+// each module is an object with one key (module name) and the value is the module
+const moduleDefinitions = [
     // the first module can't have any dependencies
-    config: () => config,
-    apiClient,
-    routes,
-    app,
+    { config: () => config },
+    { apiClient },
+    { routes },
+    { app },
     // the last module(s) are the entry points since they cannot be used by any other modules
-};
+];
 
 // bootstrap all modules
 deppie(moduleDefinitions);
