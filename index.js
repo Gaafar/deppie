@@ -63,7 +63,7 @@ these dependencies must be defined before "${name}"`);
 
             // ignore modules with no return, with a log message
             const createdModule = factoryMethod(dependencies);
-            if (createdModule == undefined) {
+            if (createdModule == null) {
                 console.log(`no return from module "${name}", it will not be available to inject`);
                 return dependencies;
             }
