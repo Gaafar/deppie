@@ -1,5 +1,5 @@
 {
-  "name": "deppie",
+  "name": "deppie-example",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -7,18 +7,16 @@
     "run": "node index.js",
     "dev": "nodemon index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Gaafar/deppie.git"
-  },
+  "repository": {},
   "author": "Mostafa Gaafar",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Gaafar/deppie/issues"
-  },
-  "homepage": "https://github.com/Gaafar/deppie#readme",
+  "bugs": {},
+  "homepage": "",
   "dependencies": {
-    "babylon": "^6.8.1",
+    "bluebird": "^3.4.0",
+    "body-parser": "^1.15.1",
+    "deppie": "0.1.0",
+    "express": "^4.13.4",
     "lodash": "^4.13.1"
   },
   "devDependencies": {
