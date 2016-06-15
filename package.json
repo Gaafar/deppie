@@ -1,6 +1,6 @@
 {
   "name": "deppie",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "The simple, small, elegant Dependency Injection framework for javascript.",
   "main": "index.js",
   "scripts": {
