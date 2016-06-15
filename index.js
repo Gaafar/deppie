@@ -1,5 +1,6 @@
 const f = require('lodash/fp');
 const babylon = require('babylon');
+const madge = require('madge');
 
 const parseDependencies = (functionStr) => {
     const parsed = babylon.parse(functionStr, {
@@ -12,62 +13,123 @@ const parseDependencies = (functionStr) => {
     return properties;
 };
 
-const checkMissingDependencies = (factoryMethod, dependencies) => {
-    // check if all dependencies are available for module
-    const functionStr = factoryMethod.toString();
-    const requiredDependencies = parseDependencies(functionStr);
+// returns new modules hash
+const createModule = (name, dependencyGraph, existingModules, moduleDefinitions) => {
+    // check if module already exists
+    const existingDependency = existingModules[name];
+    if (existingDependency) {
+        return existingModules;
+    }
 
-    const missingDependencies = f.filter(d => !dependencies[d], requiredDependencies);
+    // create dependencies recursively
+    const moduleDependencies = dependencyGraph[name];
+    const updatedDependencies = f.reduce(
+        (accumulatedModules, name) =>
+            f.assign(
+                accumulatedModules,
+                createModule(name, dependencyGraph, accumulatedModules, moduleDefinitions)
+            ),
+        existingModules
+    )(moduleDependencies);
 
-    return missingDependencies;
+    // create module
+    const createdModule = moduleDefinitions[name](updatedDependencies);
+    return f.assign(updatedDependencies, { [name]: createdModule });
 };
+
+const createAllModules = (dependencyGraph, existingModules, moduleDefinitions) => f.flow(
+    f.keys,
+    f.reduce(
+        (accumulatedModules, name) =>
+            createModule(name, dependencyGraph, accumulatedModules, moduleDefinitions),
+        existingModules
+    )
+)(dependencyGraph);
 
 const createProxy = (dependencies) => {
     const proxyHandler = {
         get(target, name) {
             // check string names only to avoid breaking symbols (for console.log)
-            if (typeof name === 'string' && !target[name]) {
-                console.trace(`dependency "${name}" not found`);
-            }
+            // not needed as checks are done at bootstrap time
+            // if (typeof name === 'string' && target[name] == null) {
+            //     console.trace(`dependency "${name}" not found`);
+            // }
             return target[name];
         },
         // prevent setting object properties
         set(target, name) {
-            // console.log({target, name, value});
             console.trace(`dependencies cannot be set, tried to set dependency "${name}"`);
         },
     };
-
     return new Proxy(dependencies, proxyHandler);
 };
 
 // TODO: use getters for lazy loading?
-// TODO: test with existingDependencies
+// TODO: test with existingModules
 // TODO: use a prefix for all log messages
 // TODO: rename modules, dependencies to ?
-module.exports = (moduleDefinitions, existingDependencies = {}) =>
-    f.flow(
-        f.flatMap(f.toPairs),
-        f.reduce((dependencies, [name, factoryMethod]) => {
-            if (dependencies[name]) {
-                throw new Error(`dependency name (${name}) already exists`);
-            }
-
-            // check if all dependencies are available for module
-            const missingDependencies = checkMissingDependencies(factoryMethod, dependencies);
-            if (missingDependencies.length) {
-                console.trace(`missing dependencies "${missingDependencies.join(', ')}" \
-for module "${name}"
-these dependencies must be defined before "${name}"`);
-            }
-
-            // ignore modules with no return, with a log message
-            const createdModule = factoryMethod(dependencies);
-            if (createdModule == null) {
-                console.log(`no return from module "${name}", it will not be available to inject`);
-                return dependencies;
-            }
-            return f.assign(dependencies, { [name]: createdModule });
-        }, existingDependencies),
-        createProxy
+module.exports = (moduleDefinitions, existingModules = {}) => {
+    const dependencyGraph = f.mapValues(
+        module => parseDependencies(module.toString())
     )(moduleDefinitions);
+
+    // check for missing dependencies
+    const missingDependencies = f.flow(
+        f.mapValues(
+            f.reject(dependencyName =>
+            moduleDefinitions[dependencyName] || existingModules[dependencyName]
+            )
+        ),
+        f.pickBy('length'),
+        f.toPairs
+    )(dependencyGraph);
+
+    if (missingDependencies.length) {
+        f.forEach(([name, missing]) => {
+            console.log(`unable to find dependencies "${missing.join(', ')}" for module "${name}"`);
+        })(missingDependencies);
+        throw new Error('missing dependencies');
+    }
+
+    const graphDetails = madge(dependencyGraph);
+
+    // check for cirular dependencies
+    const cirularDependencies = graphDetails.circular().getArray();
+    if (cirularDependencies.length) {
+        f.forEach(modules => {
+            if (modules.length === 1) {
+                console.log(`found self dependency in module "${modules[0]}"`);
+            } else {
+                console.log(`found circular dependencies between modules "${modules.join(', ')}"`);
+            }
+        })(cirularDependencies);
+        throw new Error('circular dependencies');
+    }
+
+    const createdModules = f.flow(
+        (moduleDefinitions) => createAllModules(dependencyGraph, existingModules, moduleDefinitions)
+    )(moduleDefinitions);
+
+    // warn about void modules
+    const voidModulesInjected = f.flow(
+        f.pickBy(module => module == null),
+        f.keys,
+        f.map(moduleName => [moduleName, graphDetails.depends(moduleName)]),
+        f.filter('1.length')
+    )(createdModules);
+
+    if (voidModulesInjected.length) {
+        f.flow(
+            f.forEach(([moduleName, dependents]) => {
+                console.log(`the module "${moduleName}" has no return and can't\
+be injected in the modules "${dependents.join(', ')}"`);
+            })
+        )(voidModulesInjected);
+        throw new Error('depending on void modules');
+    }
+
+    // remove void modules from return
+    const availableModules = f.omitBy(module => module == null)(createdModules);
+    // return proxy
+    return createProxy(availableModules);
+};
