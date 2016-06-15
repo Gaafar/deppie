@@ -62,6 +62,8 @@ There are 2 steps to use deppie
 
     Again, deppie understands that `myModule` relies on `dependency1` and `dependecy2`, so it will call their constructors first. And so on for all modules.
 
+refer to the `example` folder for a demo implementation.
+
 ## How it works
 deppie works in a very straight-forward way. In fact, the core of it was written in one sitting for a few hours.
 
