@@ -25,7 +25,8 @@ There are 2 steps to use deppie
 
 1. Declare which dependencies your module needs. Thanks to ES6/ES2015, we have a very elegant way to declare dependencies without any extra code or config. Simply wrap your module in a function that takes an object of all the dependencies in the application, and use destructuring to pick the ones your module needs. Think of it as a constructor function that you don't have to worry about calling with the right parameters. deppie will do that for you.
 
-eg: `myModule.js`
+    eg: `myModule.js`
+
     ```
     module.exports = ({ dependency1, dependecy2 }) => {
         // return your object or function here
@@ -35,7 +36,8 @@ eg: `myModule.js`
 
 2. Locate dependencies. This is the part where you tell deppie where to find the actual modules and what to call them when they are injected. It takes an object where a key is a module name that you can use to inject it, and the value is the constructor function for that module. At the root of your project, you should have a file that requires all the modules in your application, and tells deppie to wire them together.
 
-eg: `app.js`
+    eg: `app.js`
+
     ```
     const deppie = require('deppie');
 
@@ -69,6 +71,7 @@ Unlike most other DI frameworks, deppie works in a very straight-forward way. In
     You don't need to define any entry points explicitly to deppie. It can be any one of your modules, the only difference is that an entry point module will have no return naturally (void module). deppie will construct these module just like any other module, except it will not allow you to inject it in other modules.
 
     eg: `app.js`
+    
     ```
     const bodyParser = require('body-parser');
     const express = require('express');
