@@ -21,7 +21,7 @@
     "babylon": "^6.8.1",
     "install": "^0.8.1",
     "lodash": "^4.13.1",
-    "madge": "^0.5.4",
+    "madge": "^0.5.4"
   },
   "devDependencies": {
     "eslint": "^2.11.1",

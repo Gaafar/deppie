@@ -1,6 +1,11 @@
 const f = require('lodash/fp');
 const babylon = require('babylon');
 const madge = require('madge');
+const {
+    checkMissingDependencies,
+    checkCircularDependencies,
+    checkVoidModules,
+} = require('./lib/checks');
 
 const parseDependencies = (functionStr) => {
     const parsed = babylon.parse(functionStr, {
@@ -34,6 +39,7 @@ const createModule = (name, dependencyGraph, existingModules, moduleDefinitions)
 
     // create module
     const createdModule = moduleDefinitions[name](updatedDependencies);
+    // return dependencies with new module
     return f.assign(updatedDependencies, { [name]: createdModule });
 };
 
@@ -48,14 +54,6 @@ const createAllModules = (dependencyGraph, existingModules, moduleDefinitions) =
 
 const createProxy = (dependencies) => {
     const proxyHandler = {
-        get(target, name) {
-            // check string names only to avoid breaking symbols (for console.log)
-            // not needed as checks are done at bootstrap time
-            // if (typeof name === 'string' && target[name] == null) {
-            //     console.trace(`dependency "${name}" not found`);
-            // }
-            return target[name];
-        },
         // prevent setting object properties
         set(target, name) {
             console.trace(`dependencies cannot be set, tried to set dependency "${name}"`);
@@ -68,68 +66,26 @@ const createProxy = (dependencies) => {
 // TODO: test with existingModules
 // TODO: use a prefix for all log messages
 // TODO: rename modules, dependencies to ?
+// TODO: tests!!
+// TODO: readme
 module.exports = (moduleDefinitions, existingModules = {}) => {
     const dependencyGraph = f.mapValues(
         module => parseDependencies(module.toString())
     )(moduleDefinitions);
 
-    // check for missing dependencies
-    const missingDependencies = f.flow(
-        f.mapValues(
-            f.reject(dependencyName =>
-            moduleDefinitions[dependencyName] || existingModules[dependencyName]
-            )
-        ),
-        f.pickBy('length'),
-        f.toPairs
-    )(dependencyGraph);
-
-    if (missingDependencies.length) {
-        f.forEach(([name, missing]) => {
-            console.log(`unable to find dependencies "${missing.join(', ')}" for module "${name}"`);
-        })(missingDependencies);
-        throw new Error('missing dependencies');
-    }
+    checkMissingDependencies(moduleDefinitions, existingModules, dependencyGraph);
 
     const graphDetails = madge(dependencyGraph);
 
-    // check for cirular dependencies
-    const cirularDependencies = graphDetails.circular().getArray();
-    if (cirularDependencies.length) {
-        f.forEach(modules => {
-            if (modules.length === 1) {
-                console.log(`found self dependency in module "${modules[0]}"`);
-            } else {
-                console.log(`found circular dependencies between modules "${modules.join(', ')}"`);
-            }
-        })(cirularDependencies);
-        throw new Error('circular dependencies');
-    }
+    checkCircularDependencies(graphDetails);
 
-    const createdModules = f.flow(
-        (moduleDefinitions) => createAllModules(dependencyGraph, existingModules, moduleDefinitions)
-    )(moduleDefinitions);
+    const createdModules = createAllModules(dependencyGraph, existingModules, moduleDefinitions);
 
-    // warn about void modules
-    const voidModulesInjected = f.flow(
-        f.pickBy(module => module == null),
-        f.keys,
-        f.map(moduleName => [moduleName, graphDetails.depends(moduleName)]),
-        f.filter('1.length')
-    )(createdModules);
-
-    if (voidModulesInjected.length) {
-        f.flow(
-            f.forEach(([moduleName, dependents]) => {
-                console.log(`the module "${moduleName}" has no return and can't\
-be injected in the modules "${dependents.join(', ')}"`);
-            })
-        )(voidModulesInjected);
-        throw new Error('depending on void modules');
-    }
+    checkVoidModules(createdModules, graphDetails);
 
     // remove void modules from return
     const availableModules = f.omitBy(module => module == null)(createdModules);
+
     // return proxy
     return createProxy(availableModules);
 };
