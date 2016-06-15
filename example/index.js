@@ -1,4 +1,4 @@
-const deppie = require('../index');
+const deppie = require('deppie');
 
 // modules
 const config = { port: 8088 };
