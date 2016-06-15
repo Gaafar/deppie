@@ -1,23 +1,24 @@
 # deppie
 
-## Disclaimer
-deppie is just a draft for now. You can play with it to see how it works, but don't use it a real project just yet. If you're interested, follow the repo for the beta release very soon.
-<!-- deppie is still in an experimental phase. Use at your own risk, and expect breaking changes. However, owing to it's minimal API, you could argue that it will be relatively easy to modify your code for such changes. -->
-
 ## Introduction
 The simplest, smallest Dependency Injection framework for javascript.
 
-I tried to find a DI framework in JS that I could wrap my head around and get my team to use effortlessly, but they all included writing complex code to define modules and start the application, and they dictate the way you write your files.
+deppie provides a very minimal API to set up an IoC container. It was born out of the pain my team and I had trying to find a DI framework to use in our projects that we could adopt effortlessly in our existing and new projects without writing extra code or config; or creating our modules in a counter intuitive way so that the framework dictates.
 
-deppie uses minimal code to set up an IoC container.
-
-If you're not familiar with DI you can read [this article by Martin Fowler][1], but the basic idea is that you write your code that depends on a module, without knowing (or caring) where that module comes from as long as it has the interface you expect.
+If you're not familiar with DI & IoC you can refer to [this article by Martin Fowler][1], but the basic idea is that you write your code that depends on a module, without knowing (or caring) where that module comes from as long as it has the interface you expect.
 
 [This thread][2] has is a nice debate on whether we need DI or not, but, obviously, I believe we do for a few simple reasons
 
 1. "require" dependencies without knowing their paths. This means that if you change a module location on disk or swap it with another, you don't need to touch every file that depends on it. You only have to change it's definition once.
 
 2. It makes it a lot easier to mock dependencies for testing without the need for something like proxyquire to override the "require" function.
+
+## Disclaimer
+deppie is just a draft for now. You can play with it to see how it works, but don't use it a real project just yet. If you're interested, follow the repo for the beta release **very soon**.
+<!-- deppie is still in an experimental phase. Use at your own risk, and expect breaking changes. However, owing to it's minimal API, you could argue that it will be relatively easy to modify your code for such changes. -->
+
+## Install
+`npm install --save deppie`
 
 ## How to use
 
@@ -66,6 +67,8 @@ Unlike most other DI frameworks, deppie works in a very straight-forward way. In
 
     deppie just goes through all the modules defined in `moduleDefinitions` and constructs them one by one, passing all the required dependencies. If a dependency has not been constructed yet, deppie will construct it first. This goes on recursively until the base case of recursion, which is a module with no dependencies at all.
 
+    Once a module is constructed, it is added to an object that has all the created dependencies so far, then that object is passed to the constructor of the next dependency to be created (as an accumulator in a reduce function).
+
 - Entry point(s)
 
     You don't need to define any entry points explicitly to deppie. It can be any one of your modules, the only difference is that an entry point module will have no return naturally (void module). deppie will construct these module just like any other module, except it will not allow you to inject it in other modules.
@@ -93,17 +96,19 @@ Unlike most other DI frameworks, deppie works in a very straight-forward way. In
 
 ### Validations
 deppie will enforce some rules for your modules
-- no missing dependencies
 - no circular dependencies
 - no self dependencies
 - can't depend on void modules
+- can't depend on modules that are not defined
 
 and warn you about some other rules
 - no unused modules (TODO)
 
+### Design decisions
+- The decision to use destructuring in the constructor function as opposed to ordered function parameters, means that you don't have to worry about an uglifier renaming your parameters and breaking injection (like AngularJS), or having to use string names of the dependencies then adding them as parameters with the same order as function parameters (like RequireJS).
+
 <!--
 TODO:
-## Design decisions
 
 ## Partial adoption
 
