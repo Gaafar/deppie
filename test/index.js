@@ -1,10 +1,44 @@
-const assert = require('chai').assert;
+const { assert } = require('chai');
+const deppie = require('../index');
 
 describe('deppie', () => {
-    describe('#indexOf()', () => {
-        it('should return -1 when the value is not present', () => {
-            assert.equal(-1, [1, 2, 3].indexOf(5));
-            assert.equal(-1, [1, 2, 3].indexOf(0));
+    describe('missing dependency', () => {
+        it('should throw exception for missing dependencies', () => {
+            const dep1 = ({ dep2, dep3 }) => ({ a: dep2, b: dep3 });
+            const dep2 = ({ dep1 }) => ({ a: dep1 });
+            assert.throws(() => deppie({ dep1, dep2 }),
+                'missing dependencies'
+            );
+        });
+    });
+
+    describe('circular dependency', () => {
+        it('should throw exception for circular dependencies', () => {
+            const dep1 = ({ dep2 }) => ({ a: dep2 });
+            const dep2 = ({ dep1 }) => ({ a: dep1 });
+            assert.throws(() => deppie({ dep1, dep2 }),
+                'circular dependencies'
+            );
+        });
+    });
+
+    describe('self dependency', () => {
+        it('should throw exception for self dependency', () => {
+            const dep1 = ({ dep1 }) => ({ a: dep1 });
+            const dep2 = ({ dep1 }) => ({ a: dep1 });
+            assert.throws(() => deppie({ dep1, dep2 }),
+                'circular dependencies'
+            );
+        });
+    });
+
+    describe('void dependency', () => {
+        it('should throw exception for depending on void module ', () => {
+            const dep1 = () => {};
+            const dep2 = ({ dep1 }) => ({ a: dep1 });
+            assert.throws(() => deppie({ dep1, dep2 }),
+                'depending on void modules'
+            );
         });
     });
 });

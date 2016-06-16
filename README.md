@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Gaafar/deppie.svg?branch=master)](https://travis-ci.org/Gaafar/deppie)
 # deppie
 The simple, small, elegant Dependency Injection framework for javascript.
 
