@@ -69,6 +69,7 @@ const createProxy = (dependencies) => {
 // TODO: tests!!
 // TODO: readme
 // TODO: review package dependencies (lodash)
+// TODO: export dependency graph
 module.exports = (moduleDefinitions, existingModules = {}) => {
     const dependencyGraph = f.mapValues(
         module => parseDependencies(module.toString())
