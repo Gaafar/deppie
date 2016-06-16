@@ -39,9 +39,21 @@ describe('deppie', () => {
         });
     });
 
+    describe('modifying created modules', () => {
+        it('should throw exception for modifying created modules', () => {
+            const dep1 = () => ({ a: 1 });
+            const dep2 = ({ dep1 }) => noop(dep1);
+            const modules = deppie({ dep1, dep2 });
+            assert.throws(() => { modules.dep1 = {}; },
+                'modifying dependency'
+            );
+        });
+    });
+
+
     describe('missing dependency', () => {
         it('should throw exception for missing dependencies', () => {
-            const dep1 = ({ dep2, dep3 }) => ({ a: dep2, b: dep3 });
+            const dep1 = ({ dep3 }) => ({ a: dep3 });
             const dep2 = ({ dep1 }) => ({ a: dep1 });
             assert.throws(() => deppie({ dep1, dep2 }),
                 'missing dependencies'

@@ -106,6 +106,7 @@ deppie will enforce some rules for your modules
 - no self dependencies
 - can't depend on void modules
 - can't depend on modules that are not defined
+- can't modify properties of the returned object from calling `deppie`
 
 and warn you about some other rules
 - no unused modules (TODO)

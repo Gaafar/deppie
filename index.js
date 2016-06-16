@@ -56,7 +56,8 @@ const createProxy = (dependencies) => {
     const proxyHandler = {
         // prevent setting object properties
         set(target, name) {
-            console.trace(`dependencies cannot be set, tried to set dependency "${name}"`);
+            console.log(`dependencies cannot be set, tried to set dependency "${name}"`);
+            throw new Error('modifying dependency');
         },
     };
     return new Proxy(dependencies, proxyHandler);
@@ -70,6 +71,7 @@ const createProxy = (dependencies) => {
 // TODO: readme
 // TODO: review package dependencies (lodash)
 // TODO: export dependency graph
+// TODO: check wrong function signature (no destructuring, multiple args, ...)
 module.exports = (moduleDefinitions, existingModules = {}) => {
     const dependencyGraph = f.mapValues(
         module => parseDependencies(module.toString())
