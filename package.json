@@ -6,7 +6,8 @@
   "scripts": {
     "run": "node index.js",
     "dev": "nodemon index.js",
-    "test": "mocha"
+    "lint": "eslint .",
+    "test": "eslint . && mocha"
   },
   "repository": {
     "type": "git",
