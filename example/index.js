@@ -1,7 +1,7 @@
 const deppie = require('deppie');
 
 // modules
-const config = { port: 8088 };
+const config = { port: 8888 };
 const apiClient = require('./modules/api-client');
 const logStart = require('./modules/log-start');
 const routes = require('./routes');
