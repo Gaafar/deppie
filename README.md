@@ -57,6 +57,7 @@ deppie({ main, module1, module2 })
 ## What just happened?
 
 Two things happened here
+
 1. **Declare dependencies**
 
     Each of the modules (module1, module2, main) is defined as a "constructor function" that takes an object of all other modules and uses ES6/ES2015 destructuring to pick only the modules it depends on.
