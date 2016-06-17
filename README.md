@@ -7,13 +7,13 @@ The simple, elegant Dependency Injection framework for javascript.
 
 ## Introduction
 
-deppie provides a dead simple way to set up an Inversion of Control (IoC) container. It was born out of the frustration my team and I had trying to find a Dependency Injection (DI) framework to use in our projects that we could adopt effortlessly in our existing and new projects without writing extra code or config; or creating our modules in a convoluted way that the framework dictates.
+deppie provides a dead simple way to set up an Inversion of Control (IoC) container. It was born out of the frustration my team and I had trying to find a Dependency Injection (DI) framework to use in our projects that we could adopt effortlessly in our existing and new projects without writing extra code or config; or creating our modules in a convoluted way that the framework dictates; or worrying about the blood magic the framework is doing to summon our code.
 
 ## Features
 
 - Minimal API that can be learned in a few minutes
 - No extra code/config/annotations required
-- One to one [mapping to `require`](#mapping-to-require) modules
+- One to one [direct mapping to `require` modules](#mapping-to-require)
 - Can be [adopted partially](#partial-adoption) to work with existing code
 
 ## Do we need Dependency Injection?
