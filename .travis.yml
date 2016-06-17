@@ -3,4 +3,5 @@ node_js:
     - "6.2.0"
 install:
     - cd examples/basic && npm install
+    - cd ../partial && npm install
     - cd ../../ && npm install
