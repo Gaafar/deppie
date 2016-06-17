@@ -2,18 +2,22 @@
 [![Build Status](https://travis-ci.org/Gaafar/deppie.svg?branch=master)](https://travis-ci.org/Gaafar/deppie)
 [![Dependency Status](https://david-dm.org/Gaafar/deppie.svg)](https://david-dm.org/Gaafar/deppie)
 # deppie
+
 The simple, elegant Dependency Injection framework for javascript.
 
 ## Introduction
+
 deppie provides a dead simple way to set up an Inversion of Control (IoC) container. It was born out of the frustration my team and I had trying to find a Dependency Injection (DI) framework to use in our projects that we could adopt effortlessly in our existing and new projects without writing extra code or config; or creating our modules in a convoluted way that the framework dictates.
 
 ## Features
+
 - Minimal API that can be learned in a few minutes
 - No extra code/config/annotations required
-- One to one mapping to `require` modules
-- Can be adopted partially to work with normal modules
+- One to one [mapping to `require`](#mapping-to-require) modules
+- Can be [adopted partially](#partial-adoption) to work with existing code
 
-## Do we need Dependency Injection
+## Do we need Dependency Injection?
+
 If you're not familiar with DI & IoC you can refer to [this article by Martin Fowler][1], but the basic idea is that you write your code that depends on a module, without knowing (or caring) where that module comes from as long as it has the interface you expect.
 
 [This thread][2] has is a nice debate on whether we need DI or not, but, obviously, I believe we do for a few reasons
@@ -25,9 +29,11 @@ If you're not familiar with DI & IoC you can refer to [this article by Martin Fo
 3. It helps you organize and reason about you application as loosely coupled modules.
 
 ## Install
+
 `npm install --save deppie`
 
 ## TLDR example
+
 ```javascript
 const deppie = require("deppie")
 
@@ -49,6 +55,7 @@ deppie({ main, module1, module2 })
 ```
 
 ## What just happened?
+
 Two things happened here
 1. **Declare dependencies**
 
@@ -65,13 +72,15 @@ It is that simple. This is all it takes for deppie to create all your modules wi
 Check out the [examples folder](https://github.com/Gaafar/deppie/tree/master/examples) for more detailed demos.
 
 ## How it works
+
 deppie works in a very straight-forward way. In fact, the core of it was written in one sitting for a few hours.
 
 `deppie(modules)` parses the signatures of the constructor functions of all the passed modules and keeps track of what dependencies they need in order to be created.  
 
 Then, deppie passes all the modules into a `reduce` function that goes through the  modules one by one, for each module it checks if its dependencies have been created or creates them if needed (recursively), then adds the created module(s) to the accumulator of the reduce function to be available for the next module.
 
-## Mapping to `require`
+## Mapping to require
+
 It is extremely easy to convert existing modules that `require` their dependencies to modules that use dependency injection.
 
 eg: `myModule.js` with require
@@ -145,6 +154,7 @@ module.exports = ({ getUsersRoute, config }) => {
 ```
 
 ## Validations
+
 deppie will check these rules for your modules when they are passed, and throw an error if they are violated
 - no missing dependencies
 - no circular dependencies
@@ -157,15 +167,18 @@ and warn you about some other rules
 - no unused modules (TODO)
 
 ## Design decisions
+
 - The decision to use destructuring in the constructor function as opposed to ordered function parameters, means that you don't have to worry about an uglifier renaming your parameters and breaking injection (like AngularJS), or having to use string names of the dependencies then adding them as parameters with the same order as function parameters (like RequireJS).
 
 ## Roadmap
+
 - Visualize dependency graph
 - Optimize package size
 - Add support for ES5
 - Add tests for browsers
 
 ## Disclaimer
+
 deppie is still in an early stage, and I wouldn't recommend using it in production just yet.
 
 Before the first release (1.0), breaking changes will be marked by updating the minor version (eg: 0.1.8 to 0.2.0). However, owing to it's minimal API, I expect it to be relatively easy to modify your code for such changes if they happen.
