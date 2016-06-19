@@ -96,9 +96,12 @@ module.exports = 42;
 ```
 
 Now to write the same module using dependency injection there are 3 steps:
+
 1. Wrap every thing in a constructor function and export it.
-2. The required modules become parameters in the constructor function.
-3. The previous export of the module become the return.
+
+2. The required modules become parameters in the constructor function (as a desctructured object).
+
+3. The previous export of the module becomes the return.
 
 ```javascript
 module.exports = ({ dependency }) => {
@@ -188,7 +191,8 @@ After the first release, I will be following semantic versioning for future rele
 
 <!--
 TODO:
-- example for advanced comopsition of deppies
+- review other frameworks
+- example for advanced composition of deppies
 - design decision, no asynchrony
 - Good Practices
     index, app, routes
