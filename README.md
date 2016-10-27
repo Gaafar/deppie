@@ -196,6 +196,7 @@ TODO:
 - design decision, no asynchrony
 - Good Practices
     index, app, routes
+- support returning promises?
 -->
 
 
