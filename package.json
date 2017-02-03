@@ -18,6 +18,12 @@
   "bugs": {
     "url": "https://github.com/Gaafar/deppie/issues"
   },
+  "keywords": [
+   "ioc",
+   "di",
+   "dependency injection",
+   "inversion of control"
+ ],
   "homepage": "https://github.com/Gaafar/deppie#readme",
   "dependencies": {
     "babylon": "^6.8.1",

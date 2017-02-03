@@ -64,14 +64,15 @@ const createProxy = (dependencies) => {
 };
 
 // TODO: use getters for lazy loading?
-// TODO: test with existingModules
 // TODO: use a prefix for all log messages
 // TODO: rename modules, dependencies to ?
-// TODO: tests!!
-// TODO: readme
-// TODO: review package dependencies (lodash)
+// TODO: optimize package dependencies size (lodash)
 // TODO: export dependency graph
 // TODO: check wrong function signature (no destructuring, multiple args, ...)
+// TODO: log multiple modules as array
+// TODO: add coveralls
+// TODO: log how to fix errors
+// TODO: options: prod mode to suppress logs
 module.exports = (moduleDefinitions, existingModules = {}) => {
     const dependencyGraph = f.mapValues(
         module => parseDependencies(module.toString())
